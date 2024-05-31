@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liu.mapper.UsersMapper">
+
+    <resultMap type="com.liu.entity.Users" id="listUser">
+<!--        实体和数据库字段-->
+        <result property="uid" column="uid"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="occupation" column="occupation"/>
+        <result property="eid" column="eid"/>
+        <result property="description" column="description"/>
+        <result property="fid" column="fid"/>
+        <result property="remark" column="remark"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="deleted" column="deleted"/>
+        <result property="isType" column="is_type"/>
+
+        <association property="family"  javaType="com.liu.entity.Family" >
+            <result property="fid" column="fid"/>
+            <result property="familyCode" column="family_code"/>
+            <result property="familyName" column="family_name"/>
+        </association>
+
+        <association property="education"  javaType="com.liu.entity.Education" >
+            <result property="eid" column="eid"/>
+            <result property="educationCode" column="education_code"/>
+            <result property="educationName" column="education_name"/>
+        </association>
+
+    </resultMap>
+    <select id="listUsers" resultMap="listUser">
+        select t1.uid,
+        t1.username,
+        t1.password,
+        t1.name,
+        t1.sex,
+        t1.occupation,
+        t1.eid,
+        t1.description,
+        t1.fid,
+        t1.remark,
+        t1.create_time,
+        t1.update_time,
+        t1.deleted,
+        t1.is_type,
+        t2.fid,
+        t2.family_code,
+        t2.family_name,
+        t3.eid,
+        t3.education_code,
+        t3.education_name
+
+        from t_users t1 left join t_family t2 on t1.fid = t2.fid
+        left join t_education t3 on t1.eid = t3.eid
+
+        where t1.deleted = 0
+        <if test="usersVo.username!='' and usersVo.username!=null">
+            and t1.username like #{usersVo.username}
+        </if>
+        <if test="usersVo.name!='' and usersVo.name!=null">
+            and t1.name like #{usersVo.name}
+        </if>
+
+
+    </select>
+
+    <select id="familyEduById" resultMap="listUser">
+        select t1.uid,
+               t1.username,
+               t1.password,
+               t1.name,
+               t1.sex,
+               t1.occupation,
+               t1.eid,
+               t1.description,
+               t1.fid,
+               t1.remark,
+               t1.create_time,
+               t1.update_time,
+               t1.deleted,
+               t1.is_type,
+               t2.fid,
+               t2.family_code,
+               t2.family_name,
+               t3.eid,
+               t3.education_code,
+               t3.education_name
+
+
+        from t_users t1 left join t_family t2 on t1.fid = t2.fid
+                        left join t_education t3 on t1.eid = t3.eid
+        WHERE t1.deleted = 0
+          AND t1.uid = #{uid}
+
+
+    </select>
+
+</mapper>
